@@ -5,6 +5,7 @@ import { BullModule } from '@nestjs/bull';
 import { OnChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { OffChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { OnChainCertificateModule } from '@energyweb/origin-247-certificate';
 
 
 @Module({
@@ -26,8 +27,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         port: 6379,
       },
     }),
+    OnChainCertificateModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  
 })
 export class AppModule {}
