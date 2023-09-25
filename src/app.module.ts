@@ -4,6 +4,12 @@ import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bull';
 import { OnChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { TypeOrmModule } from '@nestjs/typeorm';
+<<<<<<< Updated upstream
+=======
+import { OnChainCertificateModule } from '@energyweb/origin-247-certificate';
+import { OnChainController } from './on-chain/on-chain.controller';
+import { OnChainService } from './on-chain/on-chain.service';
+>>>>>>> Stashed changes
 
 @Module({
   imports: [
@@ -24,7 +30,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       },
     }),
   ],
+<<<<<<< Updated upstream
   controllers: [AppController],
   providers: [AppService],
+=======
+  controllers: [AppController, OnChainController],
+  providers: [AppService, OnChainService],
+  
+>>>>>>> Stashed changes
 })
 export class AppModule {}
