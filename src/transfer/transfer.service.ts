@@ -13,7 +13,7 @@ export class SimulationTransferService {
                 fromTime: new Date(),
                 toTime: new Date(),
                 transferDate: new Date(),
-                energyValue: '123',
+                energyValue: '1000',
                 metadata: null
             })
         );

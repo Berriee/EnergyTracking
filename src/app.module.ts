@@ -11,17 +11,17 @@ import { OnChainService } from './on-chain/on-chain.service';
 import { EnergyTransferRequestEntity } from '@energyweb/origin-247-transfer';
 import { TransferModule } from '@energyweb/origin-247-transfer';
 import { SimulationTransferService } from './transfer/transfer.service';
-import { SimulationTransferModule } from './transfer/transfer.module';
-import { IGetTransferSitesQueryHandler } from '@energyweb/origin-247-transfer';
-import { TestOffChainModule } from './test-off-chain/test-off-chain.module';
+import { SitesQueryHandler } from './transfer/get-transfer.query-handler';
+import { TransferController } from './transfer/transfer.controller';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
-    /* TransferModule.register({
+    TransferModule.register({
       validateCommands: [
     
       ]
-    }), */
+    }),
 
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -30,7 +30,7 @@ import { TestOffChainModule } from './test-off-chain/test-off-chain.module';
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities/* , EnergyTransferRequestEntity */],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -41,10 +41,9 @@ import { TestOffChainModule } from './test-off-chain/test-off-chain.module';
     }),
     OnChainCertificateModule,
     TransferModule,
-    SimulationTransferModule,
-    TestOffChainModule,
+    CqrsModule,
   ],
-  controllers: [AppController, OnChainController],
-  providers: [AppService, OnChainService, /* SimulationTransferService */],
+  controllers: [AppController, OnChainController, TransferController],
+  providers: [AppService, OnChainService, SimulationTransferService, SitesQueryHandler],
 })
 export class AppModule {}
