@@ -13,14 +13,14 @@ interface IMetadata {
   }
   
 const params: IIssueCommandParams<IMetadata> = {
-    toAddress: '0x4ef085850fE4DfdA1806fdD95e8B5CBEac629B75',
+    toAddress: '0x830b81118bbc373B10D6996f03158009BD8660A9',
     userId: '1',
     energyValue: '123',
     fromTime: new Date(),
     toTime: new Date(),
-    deviceId: '123',
+    deviceId: '1',
     metadata: {
-        myCustomCertificateData: '123',
+        myCustomCertificateData: 'test_certificate',
     },
 };
 

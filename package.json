@@ -18,14 +18,17 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm:run:certificate": "typeorm migration:run --config node_modules/@energyweb/origin-247-certificate/dist/js/ormconfig.js"
+    "typeorm:run:certificate": "typeorm migration:run --config node_modules/@energyweb/origin-247-certificate/dist/js/ormconfig.js",
+    "typeorm:run:transfer": "typeorm migration:run --config node_modules/@energyweb/origin-247-transfer/dist/js/ormconfig.js"
   },
   "dependencies": {
     "@energyweb/issuer": "^7.0.1",
     "@energyweb/origin-247-certificate": "^4.1.5",
+    "@energyweb/origin-247-transfer": "^3.0.1",
     "@nestjs/bull": "^10.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/cqrs": "^10.2.5",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.0",
     "bull": "4.11.3",
