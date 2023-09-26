@@ -10,6 +10,12 @@ import { OnChainController } from './on-chain/on-chain.controller';
 import { OnChainService } from './on-chain/on-chain.service';
 import { TestOffChainController } from './test-off-chain/test-off-chain.controller';
 import { TestOffChainService } from './test-off-chain/test-off-chain.service';
+import { ClaimModule } from '@energyweb/origin-247-claim';
+import { entities as ClaimEntitites } from '@energyweb/origin-247-claim';
+import { ClaimTestService } from './claim-test/claim-test.service';
+import { ClaimTestController } from './claim-test/claim-test.controller';
+
+
 
 @Module({
   imports: [
@@ -20,7 +26,7 @@ import { TestOffChainService } from './test-off-chain/test-off-chain.service';
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, ...ClaimEntitites],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -31,9 +37,9 @@ import { TestOffChainService } from './test-off-chain/test-off-chain.service';
     }),
     OffChainCertificateModule,
     OnChainCertificateModule,
-
+    ClaimModule,
   ],
-  controllers: [AppController, OnChainController, TestOffChainController],
-  providers: [AppService, OnChainService, TestOffChainService],
+  controllers: [AppController, OnChainController, TestOffChainController, ClaimTestController],
+  providers: [AppService, OnChainService, TestOffChainService, ClaimTestService],
 })
 export class AppModule {}
