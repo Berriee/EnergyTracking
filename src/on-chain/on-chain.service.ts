@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { OnChainCertificateService, ONCHAIN_CERTIFICATE_SERVICE_TOKEN } from '@energyweb/origin-247-certificate';
-import { Inject } from '@angular/core';
 import { IIssueCommandParams } from '@energyweb/origin-247-certificate';
 
 /**
@@ -14,14 +13,14 @@ interface IMetadata {
   }
   
 const params: IIssueCommandParams<IMetadata> = {
-    toAddress: '0x123',
-    userId: '123',
+    toAddress: '0x830b81118bbc373B10D6996f03158009BD8660A9',
+    userId: '1',
     energyValue: '123',
     fromTime: new Date(),
     toTime: new Date(),
-    deviceId: '123',
+    deviceId: '1',
     metadata: {
-        myCustomCertificateData: '123',
+        myCustomCertificateData: 'test_certificate',
     },
 };
 
@@ -32,7 +31,7 @@ export class OnChainService {
         private certificateService: OnChainCertificateService<IMetadata>
     ) {}
     
-    public async issueRandomCertificate(): Promise<void> {
+    public async issueCertificate(): Promise<void> {
         await this.certificateService.issue(params);
     }
 }
