@@ -10,8 +10,8 @@ export class TestOffChainService {
     ) {}
 
     public async offchainCert(): Promise<any>{
-        this.blockchainSynchronizeService.synchronize();
-        return this.offChainCertificateService.getAll();
+        await this.blockchainSynchronizeService.synchronize();
+        return await this.offChainCertificateService.getAll();
     }
     
 }
