@@ -405,7 +405,7 @@
     moment "2.29.1"
     winston "3.3.3"
 
-"@energyweb/origin-247-certificate@^2.0.0", "@energyweb/origin-247-certificate@^4.1.5":
+"@energyweb/origin-247-certificate@^1.0.0", "@energyweb/origin-247-certificate@^2.0.0", "@energyweb/origin-247-certificate@^4.1.5":
   version "4.1.5"
   resolved "https://registry.npmjs.org/@energyweb/origin-247-certificate/-/origin-247-certificate-4.1.5.tgz"
   integrity sha512-wTba6HlfulZi1KCazNjgTrGUy1CPZmFco4lXMYS1ZiPono8ddN0VlMoIFY8Efmo1/JYqrHYspt/di5dMP84VqA==
@@ -419,6 +419,17 @@
     passport "0.5.0"
     pg "8.7.1"
     reflect-metadata "0.1.13"
+    typeorm "0.2.41"
+
+"@energyweb/origin-247-claim@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/@energyweb/origin-247-claim/-/origin-247-claim-5.0.1.tgz"
+  integrity sha512-omafOReQZG96piPqlCh6ygC0dxOn2kzPD5iMuO0JpID8BwBZ74UouhfehlaPiNclR209gGcW8Xew9W75gPEvPQ==
+  dependencies:
+    "@ethersproject/bignumber" "5.3.0"
+    lodash "4.17.21"
+    luxon "2.0.2"
+    pg "8.7.1"
     typeorm "0.2.41"
 
 "@energyweb/origin-247-transfer@^3.0.1":
