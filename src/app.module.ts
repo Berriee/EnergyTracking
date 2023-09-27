@@ -23,6 +23,7 @@ import { ClaimTestController } from './claim-test/claim-test.controller';
 
 @Module({
   imports: [
+    ClaimModule,
     TransferModule.register({
       validateCommands: [
     
