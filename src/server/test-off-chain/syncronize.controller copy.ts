@@ -6,7 +6,7 @@ export class TestOffChainController {
     constructor(private onChainService: TestOffChainService) {}
 
     @Get()
-    async getAllQuestionmark(): Promise<any> {
-        return this.onChainService.offchainCert()
+    async getAll(): Promise<any> {
+        return this.onChainService.createOffchainCert()
     }
 }

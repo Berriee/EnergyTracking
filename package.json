@@ -37,6 +37,9 @@
     "bull": "^4.11.3",
     "dotenv": "^16.3.1",
     "mysql2": "^3.6.1",
+    "next": "^13.5.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "0.2.41"
