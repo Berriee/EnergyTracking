@@ -13,7 +13,7 @@ interface IMetadata {
   }
   
 const params: IIssueCommandParams<IMetadata> = {
-    toAddress: '0x830b81118bbc373B10D6996f03158009BD8660A9',
+    toAddress: '0x824cfB1Eda5E38c9423712a71Ea7A861c54809Cd',
     userId: '1',
     energyValue: '123',
     fromTime: new Date(),

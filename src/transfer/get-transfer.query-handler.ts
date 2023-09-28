@@ -8,8 +8,8 @@ export class SitesQueryHandler implements IGetTransferSitesQueryHandler {
         console.log('generatorId', generatorId);
 
         return {
-            buyerAddress: '0x830b81118bbc373B10D6996f03158009BD8660A9',
-            sellerAddress: '0x0680850F7093520B670d692dAFc4b1995d7f9c00',
+            buyerAddress: '0x824cfB1Eda5E38c9423712a71Ea7A861c54809Cd',
+            sellerAddress: '0xCbe7f1C3031F862cc0E9fd46B1D011B4ccDf154c',
         };
     }
 }
