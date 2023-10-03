@@ -20,6 +20,8 @@ import { ClaimModule } from '@energyweb/origin-247-claim';
 import { entities as ClaimEntitites } from '@energyweb/origin-247-claim';
 import { ClaimTestService } from './claim-test/claim-test.service';
 import { ClaimTestController } from './claim-test/claim-test.controller';
+import { MarketSimulationController } from './market-simulation/market-simulation.controller';
+import { MarketSimulationService } from './market-simulation/market-simulation.service';
 
 @Module({
   imports: [
@@ -51,7 +53,7 @@ import { ClaimTestController } from './claim-test/claim-test.controller';
     TransferModule,
     CqrsModule,
   ],
-  controllers: [AppController, OnChainController, TransferController, TestOffChainController, ClaimTestController],
-  providers: [AppService, OnChainService, SimulationTransferService, SitesQueryHandler, TestOffChainService, ClaimTestService],
+  controllers: [AppController, OnChainController, TransferController, TestOffChainController, ClaimTestController, MarketSimulationController],
+  providers: [AppService, OnChainService, SimulationTransferService, SitesQueryHandler, TestOffChainService, ClaimTestService, MarketSimulationService],
 })
 export class AppModule {}

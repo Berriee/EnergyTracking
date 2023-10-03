@@ -6,10 +6,20 @@ export class SitesQueryHandler implements IGetTransferSitesQueryHandler {
     async execute(query: GetTransferSitesQuery): Promise<IGetTransferSitesQueryResponse> {
         const { generatorId } = query.payload;
         console.log('generatorId', generatorId);
+        
+        const buyerAddress: string = '0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6';
+        let sellerAddress: string;
+        
+        //TODO: 2. Seller address apparently needs to be registered as issuer
+        if (generatorId === '1') {
+            sellerAddress = '0xF8b904347a4c8Fa7Eb22B73304d849a11CD59Ad8';
+        } else if (generatorId === '2') {
+            sellerAddress = '0x011bdA31F1AD7cC6E51D2E7DCB04Bbb8D812e103';
+        }
 
         return {
-            buyerAddress: '0x824cfB1Eda5E38c9423712a71Ea7A861c54809Cd',
-            sellerAddress: '0xCbe7f1C3031F862cc0E9fd46B1D011B4ccDf154c',
+            sellerAddress: sellerAddress,
+            buyerAddress: buyerAddress,
         };
     }
 }

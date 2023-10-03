@@ -22,7 +22,7 @@ export class TestOffChainService {
         });
 
         this.blockchainSynchronizeService.synchronize();
-        return await this.offChainCertificateService.getAll();
+        return await this.offChainCertificateService
     }
     
 }

@@ -33,5 +33,6 @@ export class OnChainService {
     
     public async issueCertificate(): Promise<void> {
         await this.certificateService.issue(params);
+        //await this.certificateService
     }
 }
