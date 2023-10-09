@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { GenerationReadingStoredEvent } from '@energyweb/origin-247-transfer';
 import { BlockchainSynchronizeService } from '@energyweb/origin-247-certificate';
+import { ClaimFacade, IConsumption, SpreadMatcher } from '@energyweb/origin-247-claim';
 
 @Injectable()
 export class MarketSimulationService {
     constructor(
         private eventBus: EventBus, 
-        private blockchainSynchronizeService: BlockchainSynchronizeService
+        private blockchainSynchronizeService: BlockchainSynchronizeService,
+        private claimFacade: ClaimFacade,
         ) {}
 
     public startSimulation() {
@@ -48,7 +50,7 @@ export class MarketSimulationService {
         const transferDate = toTime;
         transferDate.setHours(transferDate.getHours() + 1);
 
-        const energyValue = this.getRandomInt(1, 100).toString();
+        const energyValue = this.getRandomInt(1, 8).toString();
         const metadata = null;
         this.eventBus.publish(
             new GenerationReadingStoredEvent({
@@ -75,4 +77,39 @@ export class MarketSimulationService {
         }
         return dates;
     }
+
+    async claimTesting() {
+        /* let consumption: IConsumption = {
+            id: '1',
+            volume: new BigNumber(1000),
+        }
+        return this.claimFacade.findMatches(
+            {
+                consumerIds: ['1'],
+                generatorIds: ['1'],
+                from: new Date,
+                to: new Date,
+            },
+        )
+        await this.claimFacade.claim({
+            algorithmFn: input => {
+                
+            },
+            data: {
+                consumptions: [IConsumption],
+                generations:  []
+            
+            },
+            timeframe: {
+                from: new Date('2023-09-01'),
+                to: new Date('2023-09-30'),
+            },
+        });
+    }
+
+    public async claimCert() {
+      */  
+    } 
+
+
 }

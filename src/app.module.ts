@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bull';
-import { OffChainCertificateModule, OnChainCertificateEntities } from '@energyweb/origin-247-certificate';
+import { OffChainCertificateModule, OffChainCertificateService, OnChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { OffChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OnChainCertificateModule } from '@energyweb/origin-247-certificate';
-import { OnChainController } from './on-chain/on-chain.controller';
-import { OnChainService } from './on-chain/on-chain.service';
 import { EnergyTransferRequestEntity } from '@energyweb/origin-247-transfer';
 import { TransferModule } from '@energyweb/origin-247-transfer';
 import { SimulationTransferService } from './transfer/transfer.service';
@@ -22,15 +20,24 @@ import { ClaimTestService } from './claim-test/claim-test.service';
 import { ClaimTestController } from './claim-test/claim-test.controller';
 import { MarketSimulationController } from './market-simulation/market-simulation.controller';
 import { MarketSimulationService } from './market-simulation/market-simulation.service';
+import { RegisterDeviceController } from './register-device/register-device.controller';
+import { RegisterDeviceService } from './register-device/register-device.service';
+import { 
+  entities as DeviceRegistryEntities,
+  DeviceRegistryModule,
+} from  '@energyweb/origin-device-registry-api';
+import { AppModule as BackendModule, entities as BackendEntities } from '@energyweb/origin-backend';
+
 
 @Module({
   imports: [
-    ClaimModule,
-    TransferModule.register({
+    BackendModule,
+    /* ClaimModule, */
+    /* TransferModule.register({
       validateCommands: [
     
       ]
-    }),
+    }), */
 
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -39,7 +46,7 @@ import { MarketSimulationService } from './market-simulation/market-simulation.s
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, /* EnergyTransferRequestEntity, */ /* ...ClaimEntitites, */...BackendEntities, ...DeviceRegistryEntities],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -48,12 +55,14 @@ import { MarketSimulationService } from './market-simulation/market-simulation.s
         port: 6379,
       },
     }),
+
     OffChainCertificateModule,
     OnChainCertificateModule,
-    TransferModule,
-    CqrsModule,
+    /* TransferModule, */
+    /* CqrsModule, */
+    DeviceRegistryModule
   ],
-  controllers: [AppController, OnChainController, TransferController, TestOffChainController, ClaimTestController, MarketSimulationController],
-  providers: [AppService, OnChainService, SimulationTransferService, SitesQueryHandler, TestOffChainService, ClaimTestService, MarketSimulationService],
+  controllers: [AppController, TestOffChainController],
+  providers: [AppService, TestOffChainService],
 })
 export class AppModule {}

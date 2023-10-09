@@ -15,4 +15,13 @@ export class MarketSimulationController {
         return this.transferService.synchronize();
     }
 
+    @Get('test') 
+    async claimTesting() {
+        return this.transferService.claimTesting();
+    }
+
+    /* @Get('claim') 
+    async claimCert() {
+        return this.transferService.claimCert();
+    } */
 }
