@@ -32,12 +32,12 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
 @Module({
   imports: [
     BackendModule,
-    /* ClaimModule, */
-    /* TransferModule.register({
+    ClaimModule,
+    TransferModule.register({
       validateCommands: [
     
       ]
-    }), */
+    }),
 
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -46,7 +46,7 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, /* EnergyTransferRequestEntity, */ /* ...ClaimEntitites, */...BackendEntities, ...DeviceRegistryEntities],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites, ...BackendEntities, ...DeviceRegistryEntities],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -58,11 +58,11 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
 
     OffChainCertificateModule,
     OnChainCertificateModule,
-    /* TransferModule, */
-    /* CqrsModule, */
+    TransferModule,
+    CqrsModule,
     DeviceRegistryModule
   ],
-  controllers: [AppController, TestOffChainController],
-  providers: [AppService, TestOffChainService],
+  controllers: [AppController, TestOffChainController, MarketSimulationController],
+  providers: [AppService, TestOffChainService, MarketSimulationService],
 })
 export class AppModule {}
