@@ -63,6 +63,6 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
     DeviceRegistryModule
   ],
   controllers: [AppController, TestOffChainController, MarketSimulationController],
-  providers: [AppService, TestOffChainService, MarketSimulationService],
+  providers: [AppService, TestOffChainService, MarketSimulationService, SitesQueryHandler],
 })
 export class AppModule {}

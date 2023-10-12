@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { MarketSimulationService } from './market-simulation.service';
 
 @Controller('market-simulation')
@@ -15,13 +15,19 @@ export class MarketSimulationController {
         return this.transferService.synchronize();
     }
 
-    @Get('test') 
-    async claimTesting() {
-        return this.transferService.claimTesting();
+    @Get('claim') 
+    async claimCertificates() {
+        return this.transferService.startClaimSimulation();
     }
 
-    /* @Get('claim') 
-    async claimCert() {
-        return this.transferService.claimCert();
-    } */
+    @Get('testClaim/:certId/:amount')
+    async testClaim(@Param('certId') certId: number, @Param('amount') amount: number) {
+        console.log(certId, amount)
+        return this.transferService.testClaim(certId, amount);
+    }
+
+    @Get('getAll')
+    async getAll() {
+        return this.transferService.getAll();
+    }
 }

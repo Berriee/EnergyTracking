@@ -22,10 +22,8 @@ export class TestOffChainService {
     public async getCertificates(params: Object): Promise<any>{
         const userCertificatesCurrent = [];
         const userCertificatesPrevious = [];
-        console.log(params)
 
         const paramsDate = new Date(params['year'], params['month'] - 1, 1); // Subtract 1 from month since it is zero-indexed
-        console.log(paramsDate);
 
 
         const certificates = await this.checkForNewCertificates();
