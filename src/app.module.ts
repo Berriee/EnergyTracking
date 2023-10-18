@@ -20,13 +20,17 @@ import { ClaimTestService } from './claim-test/claim-test.service';
 import { ClaimTestController } from './claim-test/claim-test.controller';
 import { MarketSimulationController } from './market-simulation/market-simulation.controller';
 import { MarketSimulationService } from './market-simulation/market-simulation.service';
-import { RegisterDeviceController } from './register-device/register-device.controller';
-import { RegisterDeviceService } from './register-device/register-device.service';
+
 import { 
   entities as DeviceRegistryEntities,
   DeviceRegistryModule,
 } from  '@energyweb/origin-device-registry-api';
 import { AppModule as BackendModule, entities as BackendEntities } from '@energyweb/origin-backend';
+import { LeftoverEnergyValue as LeftoverEnergyValueEntity } from './leftover-energy-value/leftover-energy-value.entity';
+import { LeftoverEnergyValueService } from './leftover-energy-value/leftover-energy-value.service';
+/* import { LeftoverEnergyValueModule } from './leftover-energy-value/leftover-energy-value.module'; */
+import { DevicesService } from './devices/devices.service';
+import { Device } from './devices/device.entity';
 
 
 @Module({
@@ -38,7 +42,7 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
     
       ]
     }),
-
+    TypeOrmModule.forFeature([LeftoverEnergyValueEntity, Device]),
     TypeOrmModule.forRoot({
       type: 'postgres',
         host: 'localhost',
@@ -46,7 +50,7 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites, ...BackendEntities, ...DeviceRegistryEntities],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites, ...BackendEntities, ...DeviceRegistryEntities, LeftoverEnergyValueEntity, Device],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -60,9 +64,10 @@ import { AppModule as BackendModule, entities as BackendEntities } from '@energy
     OnChainCertificateModule,
     TransferModule,
     CqrsModule,
-    DeviceRegistryModule
+    DeviceRegistryModule,
+    
   ],
   controllers: [AppController, TestOffChainController, MarketSimulationController],
-  providers: [AppService, TestOffChainService, MarketSimulationService, SitesQueryHandler],
+  providers: [AppService, TestOffChainService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService],
 })
 export class AppModule {}

@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { GenerationReadingStoredEvent } from '@energyweb/origin-247-transfer';
 import { BlockchainSynchronizeService, ICertificateReadModel, OffChainCertificateService } from '@energyweb/origin-247-certificate';
-import { ClaimFacade, IConsumption, SpreadMatcher } from '@energyweb/origin-247-claim';
-import { ICertificate, IClaimData } from '@energyweb/issuer';
-import { issueCertificates } from '@energyweb/issuer/dist/js/src/blockchain-facade/CertificateBatchOperations';
+import { LeftoverEnergyValueService } from 'src/leftover-energy-value/leftover-energy-value.service';
+import { LeftoverEnergyValue } from '../leftover-energy-value/leftover-energy-value.entity';
+import { DevicesService } from '../devices/devices.service';
+import { Device } from '../devices/device.entity'
+import { DeviceTypes } from '../util/device-types.enum' 
+
+require('dotenv').config();
 
 @Injectable()
 export class MarketSimulationService {
@@ -12,46 +16,66 @@ export class MarketSimulationService {
         private eventBus: EventBus, 
         private blockchainSynchronizeService: BlockchainSynchronizeService,
         private offChainCertificateService: OffChainCertificateService,
-        private claimFacade: ClaimFacade,
+        private leftoverEnergyValueService: LeftoverEnergyValueService,
+        private devicesService: DevicesService
         ) {}
 
-    public startSimulation() {
-        const startDate = new Date('2023-09-01');
+
+
+    public async startIssueanceSimulation(amountDevices: number) {
+        const devices = await this.createDevices(amountDevices);
+        const startDate = new Date('2022-10-01');
         const endDate = new Date();
         const days = this.getDates(startDate, endDate);
-        this.issueCertificates(days);
-        /* this.claimCertificateSimulation(days); */
+        this.issueCertificates(days, devices);
     }
 
-    public startClaimSimulation() {
-        const startDate = new Date('2023-09-01');
+    public startClaimSimulation(receiverAdress: string) {
+        const startDate = new Date('2022-10-01');
         const endDate = new Date();
         const days = this.getDates(startDate, endDate);
-        this.claimCertificateSimulation(days);
+        this.claimCertificateSimulation(days, receiverAdress);
 
     }
 
-    private issueCertificates(days: Date[]) {
-        /* const startDate = new Date('2023-09-01');
-        const endDate = new Date();
-        const days = this.getDates(startDate, endDate); */
+    private issueCertificates(days: Date[], devices: Device[]) {
         days.forEach(day => {
-            const generators = this.getRandomInt(1, 3);
+            const generators = this.getRandomInt(1, devices.length);
+            const randomCombination = this.getRandomCombination(devices, generators)
 
-            switch (generators) {
-                case 1:
-                    this.generateEvent('1', day);
-                    break;
-                case 2:
-                    this.generateEvent('2', day);
-                    break;
-                //both sellers generate 
-                case 3:
-                    this.generateEvent('1', day);
-                    this.generateEvent('2', day);
-                    break;
-            }
+            randomCombination.map(async (device) => {
+                console.log('GENERATING EVENT FOR DEVICE: ', device.name);
+                this.generateEvent(device.name + " " + device.issuerAddress, day);
+            })
         });
+    }
+    // This method creates a random combination with the given Array and the given number of elements
+    private getRandomCombination<T>(arr: T[], n: number): T[] {
+        const shuffled = [...arr];
+        let i = arr.length;
+        while (i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled.slice(0, n);
+    } 
+
+    private async createDevices(amountDevices: number) {
+        try {
+            let devices = await this.devicesService.getAllDevicesByIssuer(process.env.ISSUER_ADDRESS);
+            while (devices.length < amountDevices) {
+                console.log('GENERATING NEW DEVICES')
+                const newDevice = new Device();
+                newDevice.issuerAddress = process.env.ISSUER_ADDRESS;
+                newDevice.deviceType = DeviceTypes.SOLAR;
+                newDevice.name = `${newDevice.deviceType} ${devices.length + 1}`;
+                await this.devicesService.createDevice(newDevice);
+                devices = await this.devicesService.getAllDevicesByIssuer(process.env.ISSUER_ADDRESS);
+            }
+            return devices;
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     public synchronize() {
@@ -68,7 +92,7 @@ export class MarketSimulationService {
         const transferDate = toTime;
         //transferDate.setHours(transferDate.getHours() + 1);
 
-        const energyValue = this.getRandomInt(1, 8).toString();
+        const energyValue = this.getRandomInt(1, 4).toString();
         const metadata = null;
         this.eventBus.publish(
             new GenerationReadingStoredEvent({
@@ -96,103 +120,80 @@ export class MarketSimulationService {
         return dates;
     }
 
-    async claimCertificateSimulation(days: Date[]) {
+    async claimCertificateSimulation(days: Date[], receiverAdress: string) {
         // Get all synchronized and non claimed certificates 
         let leftoverEnergyValue = [];
         days.forEach(async (day) => {
-            this.offChainCertificateService.getAll().then((certificates) => {
-                certificates.forEach((certificate, index) => {
-                                     // Add only claimable certificates to the array
+            let dailyEnergyConsumption = this.getRandomInt(4, 20);
 
-                //TODO add this after beeing done with the code documentation
-                /* if (certificate.isSynced == false) {
-                    return
-                } */
+            const certificates = await this.offChainCertificateService.getAll()
+        
+            certificates.forEach(async (certificate, index) => {
 
-                //Check if the certificate generationEndTime is on the same day or in the past as the current day
+                                    // Add only claimable certificates to the array
 
-                const generationEndTime = new Date(certificate.generationEndTime * 1000);
+            //TODO add this after beeing done with the code documentation
+            /* if (certificate.isSynced == false) {
+                return
+            } */
 
-                if(generationEndTime.getDay() > day.getDay()) {
-                    console.log('certificate generationEndTime is in the future')
+            //Check if the certificate generationEndTime is on the same day or in the past as the current day
 
-                    return
-                }
+            const generationEndTime = new Date(certificate.generationEndTime * 1000);
 
-                if (certificate.owners['0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6'] === "0") {
-                    console.log('certificate has already been claimed')
+            if(generationEndTime.getDay() > day.getDay()) {
+                console.log('certificate generationEndTime is in the future')
 
-                    return
-                }
+                return
+            }
 
-                const dailyEnergyConsumption = this.getRandomInt(2, 12);
+            if (certificate.owners[receiverAdress] === "0") {
+                console.log('certificate has already been claimed')
 
-                // Check if the certificate has enough energy value to claim
-                if(Number(certificate.owners['0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6']) >= dailyEnergyConsumption) {
-                    console.log('certificate has enough energy value or leftover energy value to claim. Certificate Energy is: ' + Number(certificate.owners['0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6']) + ' and daily energy consumption is: ' + dailyEnergyConsumption),
+                return
+            }
 
 
-                    //consumedCertificates.push(certificate);
-                    this.initClaimCertificate(certificate, dailyEnergyConsumption)
+            // Check if the certificate has enough energy value to claim
+            if(Number(certificate.owners[receiverAdress]) >= dailyEnergyConsumption) {
+                console.log('certificate has enough energy value or leftover energy value to claim. Certificate Energy is: ' + Number(certificate.owners[receiverAdress]) + ' and daily energy consumption is: ' + dailyEnergyConsumption),
+                await this.initClaimCertificate(certificate, dailyEnergyConsumption, receiverAdress)
+            
+            // Checks if the certificate can be used later on
+            } else if (Number(certificate.owners[receiverAdress]) < dailyEnergyConsumption /* && (index === certificates.length - 1 || new Date(certificates[index + 1].generationEndTime * 1000).getDay() !== day.getDay()) */) {
+                console.log('certificate has not enough energy value to claim')
+
+                await this.initClaimCertificate(certificate, Number(certificate.owners[receiverAdress]), receiverAdress)
+                dailyEnergyConsumption -= Number(certificate.owners[receiverAdress])
                 
-                // Checks if the certificate certificate can be used later on
-                } else if (Number(certificate.owners['0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6']) < dailyEnergyConsumption && (index === certificates.length - 1 || new Date(certificates[index + 1].generationEndTime * 1000).getDay() !== day.getDay())) {
-                    console.log('certificate has not enough energy value to claim')
-
-                    this.initClaimCertificate(certificate, Number(certificate.owners['0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6']))
-                    leftoverEnergyValue.push(
-                            {
-                                leftoverDate: day,
-                                leftoverEnergy: dailyEnergyConsumption - Number(certificate.owners['0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6'])
-                            }
-                    )
-                } /* else {
-                    throw new Error('An unknown error occured');
-                } */
+            } else {
+                console.log('Cert Amount: ' , Number(certificate.owners[receiverAdress]), ' Energy consumption: ', dailyEnergyConsumption)
+            }
 
 
-                })
             })
-        });
-        console.log(leftoverEnergyValue)
-        // deletes the certificate from the array after it has been claimed
-        //TODO: this.offChainCertificateService.batchClaim({});
-    
+            // Add the leftoverEnergyValue to the database
+            const leftOverEnergyObject: LeftoverEnergyValue = {
+                userAdress: receiverAdress,
+                date: day,
+                energyValue: dailyEnergyConsumption
+            }
+            this.leftoverEnergyValueService.createEntry(leftOverEnergyObject);
+
+        });   
     
     }
        
 
-    private initClaimCertificate(certificate: ICertificateReadModel<any>, energyValue: number) {
-        /* const claimData: IClaimData = {
-            energyValue: energyValue,
-            metadata: null
-        } */
+    private async initClaimCertificate(certificate: ICertificateReadModel<any>, energyValue: number, receiverAdress: string) {
         this.offChainCertificateService.claim({
             certificateId: certificate.internalCertificateId,
             claimData: null,
-            forAddress: '0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6',
+            forAddress: receiverAdress,
             energyValue: energyValue.toString(),
         })
 
-        console.log('Claim initiated for certificate: ' + certificate + ' with energy value: ' + energyValue.toString())
-    }
-
-
-    async testClaim(certId: number, amount: number) {
-        try {
-            this.offChainCertificateService.claim({
-                certificateId: 2661,
-                claimData: null,
-                forAddress: '0xb923e9d65104c7895B3DA5e95FB1A601E02Cf3F6',
-                energyValue: '1',
-            })
-        }
-        catch (error) {
-            console.log(error);
-        }
-
-        return this.offChainCertificateService.getAll();
-        
+        console.log('Claim initiated for certificate: ' + certificate.internalCertificateId + ' with energy value: ' + energyValue.toString())
     }
 
     async getAll() {

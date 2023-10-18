@@ -22,7 +22,9 @@
     "typeorm:run:transfer": "typeorm migration:run --config node_modules/@energyweb/origin-247-transfer/dist/js/ormconfig.js",
     "typeorm:run:claim": "typeorm migration:run --config node_modules/@energyweb/origin-247-claim/dist/js/ormconfig.js",
     "typeorm:run:device": "typeorm migration:run --config node_modules/@energyweb/origin-device-registry-api/dist/js/ormconfig.js",
-    "typeorm:run:backend": "typeorm migration:run --config node_modules/@energyweb/origin-backend/dist/js/ormconfig.js"
+    "typeorm:run:backend": "typeorm migration:run --config node_modules/@energyweb/origin-backend/dist/js/ormconfig.js",
+
+    "typeorm:migration:generate": "npm run typeorm -- migration:generate -n"
   },
   "dependencies": {
     "@energyweb/issuer": "^7.0.1",

@@ -5,18 +5,12 @@ import { TestOffChainService } from './test-off-chain.service';
 export class TestOffChainController {
     constructor(private offChainService: TestOffChainService) {}
 
-    @Get()
-    async getAllQuestionmark(): Promise<any> {
-        return this.offChainService.offchainCert()
-    }
-
-    @Get(':month/:year/:did')
-    async getCertificateInformation(@Param('month') month: number, @Param('year') year: number, @Param('did') did: string): Promise<any> {
-        console.log(month, year, did)
+    @Get(':month/:year/:adress')
+    async getCertificateInformation(@Param('month') month: number, @Param('year') year: number, @Param('adress') adress: string): Promise<any> {
         const params = {
             month: month,
             year: year,
-            did: did
+            adress: adress
         }
         return this.offChainService.getCertificates(params);
     }
