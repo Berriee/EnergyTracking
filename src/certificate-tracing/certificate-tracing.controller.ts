@@ -1,5 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CertificateTracingService } from './certificate-tracing.service';
+import { CertificateRequestParams } from '../util/certificate-request-params.interface'
+
 
 @Controller('certificates')
 export class CertificateTracingController {
@@ -7,10 +9,12 @@ export class CertificateTracingController {
 
     @Get(':month/:year/:adress')
     async getCertificateInformation(@Param('month') month: number, @Param('year') year: number, @Param('adress') adress: string): Promise<any> {
-        const params = {
+        
+        
+        const params: CertificateRequestParams = {
             month: month,
             year: year,
-            adress: adress
+            address: adress
         }
         return this.certificateTracingService.getCertificates(params);
     }

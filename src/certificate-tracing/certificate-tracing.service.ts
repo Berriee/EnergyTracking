@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ICertificateReadModel, OffChainCertificateService } from '@energyweb/origin-247-certificate';
-import { BlockchainSynchronizeService } from '@energyweb/origin-247-certificate';
+import { OffChainCertificateService } from '@energyweb/origin-247-certificate';
 import { LeftoverEnergyValueService } from '../leftover-energy-value/leftover-energy-value.service';
-import { OnChainCertificateFacade } from '@energyweb/origin-247-certificate';
+import { CertificateRequestParams } from '../util/certificate-request-params.interface'
 
 @Injectable()
 export class CertificateTracingService {
@@ -21,18 +20,18 @@ export class CertificateTracingService {
     }) */
         return await this.offChainCertificateService.getAll();
     }
-    public async getCertificates(params: Object): Promise<any>{
+    public async getCertificates(params: CertificateRequestParams): Promise<any>{
         const userCertificatesCurrent = [];
 
         const userCertificatesPrevious = [];
 
-        const paramsDate = new Date(params['year'], params['month'] - 1, 1); // Subtract 1 from month since it is zero-indexed
+        const paramsDate = new Date(params.year, params.month - 1, 1); // Subtract 1 from month since it is zero-indexed
         const certificates = await this.offChainCertificateService.getAll();
 
         certificates.map((certificate) => {
             const certificateGenerationDate = new Date(certificate.generationEndTime * 1000)
                     
-            if(certificate.owners[params['adress']] ==  undefined){
+            if(certificate.owners[params.address] ==  undefined){
                 return
             }
 
@@ -57,8 +56,8 @@ export class CertificateTracingService {
 
         })
 
-        const leftoverEnergyValuesCurrent = await this.leftoverEnergyValueService.findByAdressAndDate(params['adress'], paramsDate)
-        const leftoverEnergyValuesPrevious = await this.leftoverEnergyValueService.findByAdressAndDate(params['adress'], new Date(paramsDate.getFullYear(), paramsDate.getMonth() - 1, 1))
+        const leftoverEnergyValuesCurrent = await this.leftoverEnergyValueService.findByAdressAndDate(params.address, paramsDate)
+        const leftoverEnergyValuesPrevious = await this.leftoverEnergyValueService.findByAdressAndDate(params.address, new Date(paramsDate.getFullYear(), paramsDate.getMonth() - 1, 1))
 
         return {
             currentCerts: userCertificatesCurrent,
