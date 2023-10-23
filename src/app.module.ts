@@ -25,7 +25,6 @@ import {
   entities as DeviceRegistryEntities,
   DeviceRegistryModule,
 } from  '@energyweb/origin-device-registry-api';
-import { AppModule as BackendModule, entities as BackendEntities } from '@energyweb/origin-backend';
 import { LeftoverEnergyValue as LeftoverEnergyValueEntity } from './leftover-energy-value/leftover-energy-value.entity';
 import { LeftoverEnergyValueService } from './leftover-energy-value/leftover-energy-value.service';
 /* import { LeftoverEnergyValueModule } from './leftover-energy-value/leftover-energy-value.module'; */
@@ -35,7 +34,6 @@ import { Device } from './devices/device.entity';
 
 @Module({
   imports: [
-    BackendModule,
     ClaimModule,
     TransferModule.register({
       validateCommands: [
@@ -50,7 +48,7 @@ import { Device } from './devices/device.entity';
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites, ...BackendEntities, ...DeviceRegistryEntities, LeftoverEnergyValueEntity, Device],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites, ...DeviceRegistryEntities, LeftoverEnergyValueEntity, Device],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -67,7 +65,7 @@ import { Device } from './devices/device.entity';
     DeviceRegistryModule,
     
   ],
-  controllers: [AppController, TestOffChainController, MarketSimulationController],
-  providers: [AppService, TestOffChainService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService],
+  controllers: [AppController, CertificateTracingController, MarketSimulationController],
+  providers: [AppService, CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService],
 })
 export class AppModule {}
