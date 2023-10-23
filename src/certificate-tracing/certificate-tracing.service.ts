@@ -5,12 +5,10 @@ import { LeftoverEnergyValueService } from '../leftover-energy-value/leftover-en
 import { OnChainCertificateFacade } from '@energyweb/origin-247-certificate';
 
 @Injectable()
-export class TestOffChainService {
+export class CertificateTracingService {
     constructor(
         private offChainCertificateService: OffChainCertificateService,
-        private blockchainSynchronizeService: BlockchainSynchronizeService,
         private leftoverEnergyValueService: LeftoverEnergyValueService,
-        private onChainCertificateFacade: OnChainCertificateFacade
     ) {}
     
     
@@ -29,7 +27,7 @@ export class TestOffChainService {
         const userCertificatesPrevious = [];
 
         const paramsDate = new Date(params['year'], params['month'] - 1, 1); // Subtract 1 from month since it is zero-indexed
-        const certificates = await this.checkForNewCertificates();
+        const certificates = await this.offChainCertificateService.getAll();
 
         certificates.map((certificate) => {
             const certificateGenerationDate = new Date(certificate.generationEndTime * 1000)
@@ -80,7 +78,7 @@ export class TestOffChainService {
     }
     
     public async getIssuanceDates(): Promise<any> {
-        const certificates = await this.checkForNewCertificates();
+        const certificates = await this.offChainCertificateService.getAll();
         const issuanceDates = [];
 
         certificates.forEach((certificate) => {
@@ -104,8 +102,8 @@ export class TestOffChainService {
     } */
 
     // Check if there are new certificates on the blockchain and add them to the allCertificates array
-    private async checkForNewCertificates(): Promise<ICertificateReadModel<any>[]> {
-        const certificates = await this.offChainCertificateService.getAll();
+    /* private async checkForNewCertificates(): Promise<ICertificateReadModel<any>[]> {
+        const certificates = ;
         return certificates;
-    }
+    } */
 }

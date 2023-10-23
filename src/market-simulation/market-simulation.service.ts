@@ -82,7 +82,7 @@ export class MarketSimulationService {
       this.blockchainSynchronizeService.synchronize();
     }    
 
-    private generateEvent(generatorId: string, day: Date) {
+    private async generateEvent(generatorId: string, day: Date) {
         const fromTime = day
         //fromTime.setHours(fromTime.getHours() + this.getRandomInt(8, 18));
         
@@ -94,7 +94,7 @@ export class MarketSimulationService {
 
         const energyValue = this.getRandomInt(1, 4).toString();
         const metadata = null;
-        this.eventBus.publish(
+        await this.eventBus.publish(
             new GenerationReadingStoredEvent({
                 generatorId: generatorId,
                 fromTime: fromTime,
@@ -186,7 +186,7 @@ export class MarketSimulationService {
        
 
     private async initClaimCertificate(certificate: ICertificateReadModel<any>, energyValue: number, receiverAdress: string) {
-        this.offChainCertificateService.claim({
+        await this.offChainCertificateService.claim({
             certificateId: certificate.internalCertificateId,
             claimData: null,
             forAddress: receiverAdress,
