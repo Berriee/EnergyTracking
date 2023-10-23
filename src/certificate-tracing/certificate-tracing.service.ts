@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OffChainCertificateService } from '@energyweb/origin-247-certificate';
 import { LeftoverEnergyValueService } from '../leftover-energy-value/leftover-energy-value.service';
 import { ICertificateRequestParams } from '../util/certificate-request-params.interface'
+import { IIssuanceDate } from '../util/issuance-dates.interface'
 
 @Injectable()
 export class CertificateTracingService {
@@ -82,31 +83,20 @@ export class CertificateTracingService {
     
     public async getIssuanceDates(): Promise<any> {
         const certificates = await this.offChainCertificateService.getAll();
-        const issuanceDates = [];
+        const issuanceDates: IIssuanceDate[] = [];
 
         certificates.forEach((certificate) => {
             const date = new Date(certificate.generationEndTime * 1000);
             const monthYearString = date.toLocaleString('default', { month: 'long', year: 'numeric' });
             const monthYearDate = new Date(date.getFullYear(), date.getMonth(), 1);
             if (!issuanceDates.some((issuanceDate) => issuanceDate.monthYearString === monthYearString)) {
-                issuanceDates.push({ monthYearString, monthYearDate });
+                issuanceDates.push({
+                    monthYearDate: monthYearDate,
+                    monthYearString: monthYearString,
+                });
             }
         });
 
         return issuanceDates.reverse();
     }
-
-    /* public async getCertificateTest() {
-        let test;
-        await this.onChainCertificateFacade.getWrappedBlockchainProperties().then(async (res) => {
-            await console.log('test: ', await res.registry.getCertificate(22))
-        })
-
-    } */
-
-    // Check if there are new certificates on the blockchain and add them to the allCertificates array
-    /* private async checkForNewCertificates(): Promise<ICertificateReadModel<any>[]> {
-        const certificates = ;
-        return certificates;
-    } */
 }
