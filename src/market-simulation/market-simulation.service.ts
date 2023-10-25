@@ -24,14 +24,14 @@ export class MarketSimulationService {
 
     public async startIssueanceSimulation(amountDevices: number) {
         const devices = await this.createDevices(amountDevices);
-        const startDate = new Date('2022-10-01');
+        const startDate = new Date('2023-10-01');
         const endDate = new Date();
         const days = this.getDates(startDate, endDate);
         this.issueCertificates(days, devices);
     }
 
     public startClaimSimulation(receiverAdress: string) {
-        const startDate = new Date('2022-10-01');
+        const startDate = new Date('2023-10-01');
         const endDate = new Date();
         const days = this.getDates(startDate, endDate);
         this.claimCertificateSimulation(days, receiverAdress);
@@ -62,15 +62,15 @@ export class MarketSimulationService {
 
     private async createDevices(amountDevices: number) {
         try {
-            let devices = await this.devicesService.getAllDevicesByIssuer(process.env.ISSUER_ADDRESS);
+            let devices = await this.devicesService.getAllDevicesByIssuer(process.env.ISSUER_ADDRESS.toLowerCase());
             while (devices.length < amountDevices) {
                 console.log('GENERATING NEW DEVICES')
                 const newDevice = new Device();
-                newDevice.issuerAddress = process.env.ISSUER_ADDRESS;
+                newDevice.issuerAddress = process.env.ISSUER_ADDRESS.toLowerCase();
                 newDevice.deviceType = DeviceTypes.SOLAR;
                 newDevice.name = `${newDevice.deviceType} ${devices.length + 1}`;
                 await this.devicesService.createDevice(newDevice);
-                devices = await this.devicesService.getAllDevicesByIssuer(process.env.ISSUER_ADDRESS);
+                devices = await this.devicesService.getAllDevicesByIssuer(process.env.ISSUER_ADDRESS.toLowerCase());
             }
             return devices;
         } catch (error) {
@@ -122,15 +122,12 @@ export class MarketSimulationService {
 
     async claimCertificateSimulation(days: Date[], receiverAdress: string) {
         // Get all synchronized and non claimed certificates 
-        let leftoverEnergyValue = [];
         days.forEach(async (day) => {
             let dailyEnergyConsumption = this.getRandomInt(4, 20);
 
             const certificates = await this.offChainCertificateService.getAll()
         
             certificates.forEach(async (certificate, index) => {
-
-                                    // Add only claimable certificates to the array
 
             //TODO add this after beeing done with the code documentation
             /* if (certificate.isSynced == false) {
@@ -156,7 +153,7 @@ export class MarketSimulationService {
 
             // Check if the certificate has enough energy value to claim
             if(Number(certificate.owners[receiverAdress]) >= dailyEnergyConsumption) {
-                console.log('certificate has enough energy value or leftover energy value to claim. Certificate Energy is: ' + Number(certificate.owners[receiverAdress]) + ' and daily energy consumption is: ' + dailyEnergyConsumption),
+                console.log('certificate has enough energy value or leftover energy value to claim. Certificate Energy is: ' + Number(certificate.owners[receiverAdress]) + ' and daily energy consumption is: ' + dailyEnergyConsumption)
                 await this.initClaimCertificate(certificate, dailyEnergyConsumption, receiverAdress)
             
             // Checks if the certificate can be used later on
@@ -167,7 +164,7 @@ export class MarketSimulationService {
                 dailyEnergyConsumption -= Number(certificate.owners[receiverAdress])
                 
             } else {
-                console.log('Cert Amount: ' , Number(certificate.owners[receiverAdress]), ' Energy consumption: ', dailyEnergyConsumption)
+                console.log('An unknown Error occured')
             }
 
 

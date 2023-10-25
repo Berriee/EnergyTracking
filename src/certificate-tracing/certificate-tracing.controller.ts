@@ -7,20 +7,20 @@ import { ICertificateRequestParams } from '../util/certificate-request-params.in
 export class CertificateTracingController {
     constructor(private certificateTracingService: CertificateTracingService) {}
 
-    @Get(':month/:year/:adress')
-    async getCertificateInformation(@Param('month') month: number, @Param('year') year: number, @Param('adress') adress: string): Promise<any> {
+    @Get(':month/:year/:address')
+    async getCertificateInformation(@Param('month') month: number, @Param('year') year: number, @Param('address') address: string): Promise<any> {
         
         
         const params: ICertificateRequestParams = {
             month: month,
             year: year,
-            address: adress
+            address: address
         }
         return this.certificateTracingService.getCertificates(params);
     }
 
-    @Get('getIssuanceDates') 
-    async getIssuanceDates(): Promise<any> {
-        return this.certificateTracingService.getIssuanceDates();
+    @Get('getIssuanceDates/:address') 
+    async getIssuanceDates(@Param('address') address: string): Promise<any> {
+        return this.certificateTracingService.getIssuanceDates(address);
     }
 }

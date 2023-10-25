@@ -7,8 +7,8 @@ export class SitesQueryHandler implements IGetTransferSitesQueryHandler {
         const { generatorId } = query.payload;
         console.log('generatorId', generatorId);
         
-        const buyerAddress: string = '0x9145FC2a91BEaDf7a5eFfe4BC9D1584b5568b4F1';
-        const sellerAddress: string = '0x82Eac5fF0aA68f8c26cA8D054C87e34c03a5284f';
+        const buyerAddress: string = '0x28676008D38Afc981D1edb7b4125f1775591896a'.toLowerCase();
+        const sellerAddress: string = '0x44A7943D878fbF2FEa43E1A2bfd7829a307A7e44'.toLowerCase();
     
         return {
             sellerAddress: sellerAddress,

@@ -81,11 +81,15 @@ export class CertificateTracingService {
         return false;
     }
     
-    public async getIssuanceDates(): Promise<any> {
+    public async getIssuanceDates(userAddress: string): Promise<any> {
         const certificates = await this.offChainCertificateService.getAll();
         const issuanceDates: IIssuanceDate[] = [];
 
         certificates.forEach((certificate) => {
+            if (certificate.owners[userAddress] === undefined) {
+                return;
+            }
+
             const date = new Date(certificate.generationEndTime * 1000);
             const monthYearString = date.toLocaleString('default', { month: 'long', year: 'numeric' });
             const monthYearDate = new Date(date.getFullYear(), date.getMonth(), 1);

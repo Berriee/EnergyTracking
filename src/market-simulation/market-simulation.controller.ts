@@ -12,14 +12,14 @@ export class MarketSimulationController {
         ) {}
     
 
-    @Get('issue/:receiverAdress/:deviceAmount')
+    @Get('issue/:receiverAddress/:deviceAmount')
     async startSimulation(@Param('deviceAmount') deviceAmount: number) {
         return this.transferService.startIssueanceSimulation(deviceAmount);
     }
 
     @Get('claim/:receiverAdress') 
     async claimCertificates(@Param('receiverAdress') receiverAdress: string) {
-        return this.transferService.startClaimSimulation(receiverAdress);
+        return this.transferService.startClaimSimulation(receiverAdress.toLowerCase());
     }
 
     @Get('synchronize') 
