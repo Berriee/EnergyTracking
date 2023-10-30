@@ -8,39 +8,36 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OnChainCertificateModule } from '@energyweb/origin-247-certificate';
 import { EnergyTransferRequestEntity } from '@energyweb/origin-247-transfer';
 import { TransferModule } from '@energyweb/origin-247-transfer';
-import { SimulationTransferService } from './transfer/transfer.service';
+
 import { SitesQueryHandler } from './transfer/get-transfer.query-handler';
 import { TransferController } from './transfer/transfer.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CertificateTracingController } from './certificate-tracing/certificate-tracing.controller';
 import { CertificateTracingService } from './certificate-tracing/certificate-tracing.service';
 import { ClaimModule } from '@energyweb/origin-247-claim';
-import { entities as ClaimEntitites } from '@energyweb/origin-247-claim';
-import { ClaimTestService } from './claim-test/claim-test.service';
-import { ClaimTestController } from './claim-test/claim-test.controller';
+
 import { MarketSimulationController } from './market-simulation/market-simulation.controller';
 import { MarketSimulationService } from './market-simulation/market-simulation.service';
 
-import { 
-  entities as DeviceRegistryEntities,
-  DeviceRegistryModule,
-} from  '@energyweb/origin-device-registry-api';
 import { LeftoverEnergyValue as LeftoverEnergyValueEntity } from './leftover-energy-value/leftover-energy-value.entity';
 import { LeftoverEnergyValueService } from './leftover-energy-value/leftover-energy-value.service';
-/* import { LeftoverEnergyValueModule } from './leftover-energy-value/leftover-energy-value.module'; */
+
 import { DevicesService } from './devices/devices.service';
 import { Device } from './devices/device.entity';
+
+import { UsersService } from './users/users.service';
+import { UsersController } from './users/users.controller';
+import { User } from './users/user.entity';
 
 
 @Module({
   imports: [
-    ClaimModule,
     TransferModule.register({
       validateCommands: [
     
       ]
     }),
-    TypeOrmModule.forFeature([LeftoverEnergyValueEntity, Device]),
+    TypeOrmModule.forFeature([LeftoverEnergyValueEntity, Device, User]),
     TypeOrmModule.forRoot({
       type: 'postgres',
         host: 'localhost',
@@ -48,7 +45,7 @@ import { Device } from './devices/device.entity';
         username: 'postgres',
         password: 'postgres',
         database: 'origin',
-        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, ...ClaimEntitites, ...DeviceRegistryEntities, LeftoverEnergyValueEntity, Device],
+        entities: [...OnChainCertificateEntities, ...OffChainCertificateEntities, EnergyTransferRequestEntity, LeftoverEnergyValueEntity, Device, User],
         synchronize: true,
     }),
     BullModule.forRoot({
@@ -62,10 +59,9 @@ import { Device } from './devices/device.entity';
     OnChainCertificateModule,
     TransferModule,
     CqrsModule,
-    DeviceRegistryModule,
     
   ],
-  controllers: [AppController, CertificateTracingController, MarketSimulationController],
-  providers: [AppService, CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService],
+  controllers: [AppController, CertificateTracingController, MarketSimulationController, UsersController],
+  providers: [AppService, CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService, UsersService],
 })
 export class AppModule {}
