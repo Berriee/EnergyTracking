@@ -5,8 +5,8 @@ import { BlockchainSynchronizeService, ICertificateReadModel, OffChainCertificat
 import { LeftoverEnergyValueService } from 'src/leftover-energy-value/leftover-energy-value.service';
 import { LeftoverEnergyValue } from '../leftover-energy-value/leftover-energy-value.entity';
 import { DevicesService } from '../devices/devices.service';
-import { Device } from '../devices/device.entity'
-import { DeviceTypes } from '../util/device-types.enum' 
+import { Device } from '../devices/device.entity';
+import { DeviceTypes } from '../util/device-types.enum'; 
 
 require('dotenv').config();
 

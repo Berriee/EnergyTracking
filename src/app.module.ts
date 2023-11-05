@@ -29,7 +29,6 @@ import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 import { User } from './users/user.entity';
 
-
 @Module({
   imports: [
     TransferModule.register({
@@ -62,6 +61,6 @@ import { User } from './users/user.entity';
     
   ],
   controllers: [AppController, CertificateTracingController, MarketSimulationController, UsersController],
-  providers: [AppService, CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService, UsersService],
+  providers: [AppService, CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService, UsersService,],
 })
 export class AppModule {}

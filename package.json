@@ -20,7 +20,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm:run:certificate": "typeorm migration:run --config node_modules/@energyweb/origin-247-certificate/dist/js/ormconfig.js",
     "typeorm:run:transfer": "typeorm migration:run --config node_modules/@energyweb/origin-247-transfer/dist/js/ormconfig.js",
-
     "typeorm:migration:generate": "npm run typeorm -- migration:generate -n"
   },
   "dependencies": {
@@ -39,6 +38,8 @@
     "@vue/cli": "^5.0.8",
     "bull": "^4.11.3",
     "dotenv": "^16.3.1",
+    "ethereumjs-util": "^7.1.5",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
