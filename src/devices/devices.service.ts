@@ -8,7 +8,6 @@ export class DevicesService {
     constructor(@InjectRepository(Device) private deviceRepository: Repository<Device>) {}
 
     async createDevice(device: Device) {
-        // const deviceEntry = await this.deviceRepository.create({...device});
         await this.deviceRepository.save(device);
     }
 

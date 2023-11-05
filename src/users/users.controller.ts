@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 
@@ -9,6 +9,7 @@ export class UsersController {
         private usersService: UsersService, 
     ) {}
 
+    // This endpoint is used to get a user
     @Get(':userAddress')
     async getUser(@Param('userAddress') userAddress: string) {
         const user = await this.usersService.getUser(userAddress)
@@ -20,26 +21,16 @@ export class UsersController {
         }
     }
 
+    // This endpoint is used to create a new user
     @Post(':userAddress')
     async createUser(@Param('userAddress') userAddress: string) {
         return await this.usersService.createUser(userAddress);
     }
     
+    // This endpoint is used to get the nonce of a user
     @Get(':userAddress/nonce')
     async startSimulation(@Param('userAddress') userAddress: string) {
         return (await this.usersService.getUser(userAddress)).nonce;
     }
 
-    @Post(':userAddress/signature')
-    async handleSignature(
-        @Param('userAddress') userAddress: string,
-        @Body() signedMessage: Object,
-        @Res() res: Response,
-        ) {        
-        
-        const response = this.usersService.generateToken(userAddress, signedMessage['signedMessage'])
-        return response
-        
-
-    }
 }

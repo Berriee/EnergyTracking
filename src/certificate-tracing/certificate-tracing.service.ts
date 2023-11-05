@@ -13,12 +13,6 @@ export class CertificateTracingService {
     
     
     public async offchainCert(): Promise<any>{
-        /* this.offChainCertificateService.claim({
-            certificateId: 1,
-            claimData: 'I',
-            forAddress: 
-            energyValue:
-    }) */
         return await this.offChainCertificateService.getAll();
     }
     public async getCertificates(params: ICertificateRequestParams): Promise<any>{
@@ -34,15 +28,16 @@ export class CertificateTracingService {
         
         certificates.map((certificate) => {
             const certificateGenerationDate = new Date(certificate.generationEndTime * 1000)
-                    
+            
+            
             if(certificate.owners[params.address] ===  undefined){
                 return
             }
 
-            //TODO Temporarily removed, add back in when done
-            /* if (certificate.isSynced == false) {
+            // Checks if the certificate is synced with the blockchain
+            if (certificate.isSynced == false) {
                 return
-            } */
+            }
 
             if(this.checkCertificateMonthAndYear(certificateGenerationDate, requestedDate)) { 
                 userCertificatesCurrent.push(certificate)
@@ -53,11 +48,14 @@ export class CertificateTracingService {
             }
         })
 
+        // Gets the leftover energy values from the current month
         const leftoverEnergyValuesCurrent = await this.leftoverEnergyValueService.findByAddressAndDate({
             address: params.address,
             month: requestedDate.getMonth(),
             year: requestedDate.getFullYear(),
         } as ICertificateRequestParams);
+        
+        // Gets the leftover energy values from the previous month
         const leftoverEnergyValuesPrevious = await this.leftoverEnergyValueService.findByAddressAndDate({
             address: params.address,
             month: prevMonth,
@@ -72,6 +70,7 @@ export class CertificateTracingService {
         }
     }
 
+    // Checks if the certificate is from the requested month and year
     private checkCertificateMonthAndYear(certificateGenerationDate: Date, paramsDate: Date): boolean {
         if(certificateGenerationDate.getMonth() === paramsDate.getMonth()) { 
             if(certificateGenerationDate.getFullYear() === paramsDate.getFullYear()) {
@@ -81,10 +80,13 @@ export class CertificateTracingService {
         return false;
     }
     
+    // Gets the issuance dates of the user
     public async getIssuanceDates(userAddress: string): Promise<any> {
         const certificates = await this.offChainCertificateService.getAll();
         const issuanceDates: IIssuanceDate[] = [];
 
+        // Loop through all certificates and check if the user is the owner of the certificate
+        // It is necessary to loop through all certificates because the SDK does not provide methods to get certificates by user address
         certificates.forEach((certificate) => {
             if (certificate.owners[userAddress] === undefined) {
                 return;

@@ -24,14 +24,14 @@ export class MarketSimulationService {
 
     public async startIssueanceSimulation(amountDevices: number) {
         const devices = await this.createDevices(amountDevices);
-        const startDate = new Date('2023-10-01');
+        const startDate = new Date('2022-10-01');
         const endDate = new Date();
         const days = this.getDates(startDate, endDate);
         this.issueCertificates(days, devices);
     }
 
     public startClaimSimulation(receiverAdress: string) {
-        const startDate = new Date('2023-10-01');
+        const startDate = new Date('2022-10-01');
         const endDate = new Date();
         const days = this.getDates(startDate, endDate);
         this.claimCertificateSimulation(days, receiverAdress);
@@ -129,10 +129,9 @@ export class MarketSimulationService {
         
             certificates.forEach(async (certificate, index) => {
 
-            //TODO add this after beeing done with the code documentation
-            /* if (certificate.isSynced == false) {
+            if (certificate.isSynced == false) {
                 return
-            } */
+            }
 
             //Check if the certificate generationEndTime is on the same day or in the past as the current day
 
@@ -157,14 +156,14 @@ export class MarketSimulationService {
                 await this.initClaimCertificate(certificate, dailyEnergyConsumption, receiverAdress)
             
             // Checks if the certificate can be used later on
-            } else if (Number(certificate.owners[receiverAdress]) < dailyEnergyConsumption /* && (index === certificates.length - 1 || new Date(certificates[index + 1].generationEndTime * 1000).getDay() !== day.getDay()) */) {
+            } else if (Number(certificate.owners[receiverAdress]) < dailyEnergyConsumption) {
                 console.log('certificate has not enough energy value to claim')
 
                 await this.initClaimCertificate(certificate, Number(certificate.owners[receiverAdress]), receiverAdress)
                 dailyEnergyConsumption -= Number(certificate.owners[receiverAdress])
                 
             } else {
-                console.log('An unknown Error occured')
+                console.error('An unknown Error occured')
             }
 
 
@@ -181,7 +180,7 @@ export class MarketSimulationService {
     
     }
        
-
+    // This method starts the actual claiming of the given certificate
     private async initClaimCertificate(certificate: ICertificateReadModel<any>, energyValue: number, receiverAdress: string) {
         await this.offChainCertificateService.claim({
             certificateId: certificate.internalCertificateId,

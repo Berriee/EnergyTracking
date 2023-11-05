@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bull';
-import { OffChainCertificateModule, OffChainCertificateService, OnChainCertificateEntities } from '@energyweb/origin-247-certificate';
+import { OffChainCertificateModule, OnChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { OffChainCertificateEntities } from '@energyweb/origin-247-certificate';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OnChainCertificateModule } from '@energyweb/origin-247-certificate';
@@ -10,11 +8,9 @@ import { EnergyTransferRequestEntity } from '@energyweb/origin-247-transfer';
 import { TransferModule } from '@energyweb/origin-247-transfer';
 
 import { SitesQueryHandler } from './transfer/get-transfer.query-handler';
-import { TransferController } from './transfer/transfer.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CertificateTracingController } from './certificate-tracing/certificate-tracing.controller';
 import { CertificateTracingService } from './certificate-tracing/certificate-tracing.service';
-import { ClaimModule } from '@energyweb/origin-247-claim';
 
 import { MarketSimulationController } from './market-simulation/market-simulation.controller';
 import { MarketSimulationService } from './market-simulation/market-simulation.service';
@@ -28,6 +24,10 @@ import { Device } from './devices/device.entity';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 import { User } from './users/user.entity';
+import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
+import { AuthGuardService } from './auth-guard/auth-guard.service';
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
@@ -58,9 +58,11 @@ import { User } from './users/user.entity';
     OnChainCertificateModule,
     TransferModule,
     CqrsModule,
-    
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+    }),
   ],
-  controllers: [AppController, CertificateTracingController, MarketSimulationController, UsersController],
-  providers: [AppService, CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService, UsersService,],
+  controllers: [ CertificateTracingController, MarketSimulationController, UsersController, AuthController],
+  providers: [ CertificateTracingService, MarketSimulationService, SitesQueryHandler, LeftoverEnergyValueService, DevicesService, UsersService, AuthService, AuthGuardService],
 })
 export class AppModule {}
